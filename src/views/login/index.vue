@@ -42,9 +42,9 @@ export default {
   data () {
     return {
       user: {
-        username: 'test01@google.com', // 手机号
-        password: '123456', // 密码
-        userStatus: '0' // 用户身份
+        username: '', // 手机号
+        password: '', // 密码
+        userStatus: '' // 用户身份
       },
       loginLoading: false, // 登录的 loading 状态
       loginForm: {
@@ -95,6 +95,11 @@ export default {
 
         // 关闭loading 状态
         this.loginLoading = false
+
+        // 将接口返回的用户相关数据放到本地存储，方便应用数据共享
+        // 本地存储只能存储字符串
+        // 如果需要存储对象、数组类型的数据，则把他们转为 JSON 格式字符串进行存储
+        window.localStorage.setItem('user', JSON.stringify(res.data))
 
         // 跳转到首页
         // this.$router.push('/')

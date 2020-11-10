@@ -37,11 +37,11 @@
             <el-radio label="2">管理员用户</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item prop="agree" text-align=left>
+        <!-- <el-form-item prop="agree" text-align=left>
           <el-checkbox v-model="user.agree"
             >我已阅读并同意用户协议和隐私条款</el-checkbox
           >
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button
             class="regist-btn"
@@ -64,12 +64,17 @@ export default {
   data () {
     return {
       user: {
-        email: 'test01@google.com', // 邮箱
-        phone: '13911111111', // 手机号
-        username: 'test01', // 用户名
-        password: '123456', // 验证码
-        userStatus: '0', // 用户身份
-        agree: false // 是否同意协议
+        // email: 'test01@google.com', // 邮箱
+        // phone: '13911111111', // 手机号
+        // username: 'test01', // 用户名
+        // password: '123456', // 验证码
+        // userStatus: '0'// 用户身份
+        email: '', // 邮箱
+        phone: '', // 手机号
+        username: '', // 用户名
+        password: '', // 验证码
+        userStatus: ''// 用户身份
+        // agree: false // 是否同意协议
       },
       // checked: false, // 是否同意协议的选中状态
       registLoading: false, // 注册的 loading 状态
@@ -90,25 +95,25 @@ export default {
         ], // 验证码
         userStatus: [
           { required: true, message: '请选择用户身份', trigger: 'change' }
-        ],
-        agree: [
-          {
-            // 自定义校验规则
-            // 返回 布尔值
-            // 验证通过 callback()
-            // 验证失败 callback(new Error("错误消息"))
-            validator: (rule, value, callback) => {
-              // value 是 是否选中
-              if (value) {
-                callback()
-              } else {
-                callback(new Error('请勾选用户协议'))
-              }
-            },
-            // message: '请勾选用户协议',
-            trigger: 'change'
-          }
         ]
+        // agree: [
+        //   {
+        //     // 自定义校验规则
+        //     // 返回 布尔值
+        //     // 验证通过 callback()
+        //     // 验证失败 callback(new Error("错误消息"))
+        //     validator: (rule, value, callback) => {
+        //       // value 是 是否选中
+        //       if (value) {
+        //         callback()
+        //       } else {
+        //         callback(new Error('请勾选用户协议'))
+        //       }
+        //     },
+        //     // message: '请勾选用户协议',
+        //     trigger: 'change'
+        //   }
+        // ]
       }
     }
   },
