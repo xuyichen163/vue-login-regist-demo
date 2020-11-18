@@ -53,6 +53,7 @@ export default {
   background: url("./start_bg.jpg") no-repeat;
   background-size: cover;
     .container{
+      width: 470px;
       background-color: #fff;
       flex-direction: column;
       .header {

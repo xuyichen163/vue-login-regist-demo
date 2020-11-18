@@ -1,7 +1,6 @@
 <template>
   <el-menu
     default-active="/login"
-    :default-openeds='["/login"]'
     mode="horizontal"
     background-color="#409efe"
     text-color="#fff"

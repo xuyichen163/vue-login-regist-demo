@@ -30,13 +30,20 @@
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="user.password" placeholder="请输入密码"></el-input>
         </el-form-item>
-        <el-form-item label="身份" prop="userStatus">
-          <el-radio-group v-model="user.userStatus">
+        <el-form-item label="身份" prop="userStatus" >
+          <el-radio-group v-model="user.userStatus" >
             <el-radio label="0">普通用户</el-radio>
             <el-radio label="1">自媒体用户</el-radio>
-            <el-radio label="2">管理员用户</el-radio>
+            <!-- <el-radio label="2" disabled>管理员用户</el-radio> -->
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="验证码" prop="vcode">
+          <el-col :span="17">
+            <el-input type="text" placeholder="请输入验证码" v-model="user.vcode">
+            </el-input>
+          </el-col>
+        <VCode  :identifyCode="identifyCode"/>
+      </el-form-item>
         <!-- <el-form-item prop="agree" text-align=left>
           <el-checkbox v-model="user.agree"
             >我已阅读并同意用户协议和隐私条款</el-checkbox
@@ -57,9 +64,13 @@
 
 <script>
 import { regist } from '@/api/user'
+import VCode from '@/views/vcode'
+
 export default {
   name: 'RegistIndex',
-  components: {},
+  components: {
+    VCode
+  },
   props: {},
   data () {
     return {
@@ -73,11 +84,14 @@ export default {
         phone: '', // 手机号
         username: '', // 用户名
         password: '', // 验证码
-        userStatus: ''// 用户身份
+        userStatus: '0', // 用户身份
         // agree: false // 是否同意协议
+        vcode: ''
       },
       // checked: false, // 是否同意协议的选中状态
       registLoading: false, // 注册的 loading 状态
+      identifyCode: '', // 校验码
+      identifyCodes: '1234567890abcdefjhijklinopqrsduvwxyz',
       registForm: { // 表单验证规则配置
         email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
@@ -95,7 +109,7 @@ export default {
         ], // 验证码
         userStatus: [
           { required: true, message: '请选择用户身份', trigger: 'change' }
-        ]
+        ],
         // agree: [
         //   {
         //     // 自定义校验规则
@@ -114,14 +128,48 @@ export default {
         //     trigger: 'change'
         //   }
         // ]
+        vcode: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              // value 是 是否选中
+              if (value.toLowerCase() === this.identifyCode.toLowerCase()) {
+                callback()
+              } else {
+                this.refreshCode()
+                callback(new Error('请填写正确验证码'))
+              }
+            },
+            // message: '请勾选用户协议',
+            trigger: 'blur'
+          }
+        ]
       }
     }
   },
   computed: {},
   watch: {},
   created () {},
-  mounted () {},
+  mounted () {
+    // 初始化验证码
+    this.identifyCode = ''
+    this.makeCode(this.identifyCodes, 4)
+  },
   methods: {
+    // 验证码
+    refreshCode () {
+      this.identifyCode = ''
+      this.makeCode(this.identifyCodes, 4)
+    },
+    makeCode (o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifyCode += this.identifyCodes[this.randomNum(0, this.identifyCodes.length)]
+      }
+    },
+    randomNum (min, max) {
+      return Math.floor(Math.random() * (max - min) + min)
+    },
+
     onRegist () {
       // 获取数据
       // const user = this.user
@@ -171,9 +219,23 @@ export default {
     padding: 30px 40px 10px 10px;
     background-color: #fff;
     .regist-form {
+      .el-form-item__content{
+        .el-radio-group{
+          .el-radio:nth-child(2){
+            margin-left: 45px;
+          }
+        }
+        .el-col {
+          margin-right: 8px;
+        }
+      }
       .regist-btn {
         width: 100%;
       }
     }
   }
+
+.regist-form-wrap .regist-form .el-form-item {
+  text-align: left;
+}
 </style>

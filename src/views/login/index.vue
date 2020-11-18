@@ -4,10 +4,10 @@
       class="login-form"
       ref="loginForm"
       :model="user"
-      label-width="60px"
+      label-width="70px"
       :rules="loginForm"
     >
-      <el-form-item label="用户" prop="username">
+      <el-form-item label="账号" prop="username">
         <el-input v-model="user.username" placeholder="请输入手机号或者邮箱"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
@@ -19,6 +19,13 @@
           <el-radio label="1">自媒体用户</el-radio>
           <el-radio label="2">管理员用户</el-radio>
         </el-radio-group>
+      </el-form-item>
+      <el-form-item label="验证码" prop="vcode">
+        <el-col :span="17">
+          <el-input type="text" placeholder="请输入验证码" v-model="user.vcode">
+          </el-input>
+         </el-col>
+        <VCode  :identifyCode="identifyCode"/>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -35,18 +42,25 @@
 
 <script>
 import { login } from '@/api/user'
+import VCode from '@/views/vcode'
+
 export default {
   name: 'LoginIndex',
-  components: {},
+  components: {
+    VCode
+  },
   props: {},
   data () {
     return {
       user: {
         username: '', // 手机号
         password: '', // 密码
-        userStatus: '' // 用户身份
+        userStatus: '0', // 用户身份
+        vcode: ''
       },
       loginLoading: false, // 登录的 loading 状态
+      identifyCode: '', // 校验码
+      identifyCodes: '1234567890abcdefjhijklinopqrsduvwxyz',
       loginForm: {
         username: [
           { required: true, message: '请输入邮箱或手机号', trigger: 'change' }
@@ -56,6 +70,22 @@ export default {
         ], // 验证码
         userStatus: [
           { required: true, message: '请选择用户身份', trigger: 'change' }
+        ],
+        vcode: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              // value 是 是否选中
+              if (value.toLowerCase() === this.identifyCode.toLowerCase()) {
+                callback()
+              } else {
+                this.refreshCode()
+                callback(new Error('请填写正确验证码'))
+              }
+            },
+            // message: '请勾选用户协议',
+            trigger: 'blur'
+          }
         ]
       }
     }
@@ -63,8 +93,27 @@ export default {
   computed: {},
   watch: {},
   created () {},
-  mounted () {},
+  mounted () {
+    // 初始化验证码
+    this.identifyCode = ''
+    this.makeCode(this.identifyCodes, 4)
+  },
   methods: {
+    // 验证码
+    refreshCode () {
+      this.identifyCode = ''
+      this.makeCode(this.identifyCodes, 4)
+    },
+    makeCode (o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifyCode += this.identifyCodes[this.randomNum(0, this.identifyCodes.length)]
+      }
+    },
+    randomNum (min, max) {
+      return Math.floor(Math.random() * (max - min) + min)
+    },
+
+    // 登录
     onLogin () {
       // 获取表单数据
       // const user = this.user

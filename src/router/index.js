@@ -11,11 +11,17 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/start',
-    redirect: '/login',
+    path: '/',
+    // path: '/start',
+    // redirect: '/login',
     // name: 'start',
     component: Start,
     children: [
+      {
+        path: '',
+        name: 'login',
+        component: Login
+      },
       {
         path: '/login',
         name: 'login',
@@ -29,7 +35,7 @@ const routes = [
     ]
   },
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: Home
   }
@@ -58,7 +64,10 @@ router.beforeEach((to, from, next) => {
 
   // 校验非登录页面的登录状态
   if (to.path !== '/login') {
-    if (user) {
+    // 跳转到注册页面
+    if (to.path === './regist') {
+      next()
+    } else if (user) {
       // 已登录，允许通过
       next()
     } else {
